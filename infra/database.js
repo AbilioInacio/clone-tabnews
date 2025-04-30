@@ -7,6 +7,7 @@ async function query(queryObject) {
     user: process.env.POSTGRES_USER,
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
+    SSL: getSSLValues(),
   });
   console.log("Credenciais do Postgres: ", {
     host: process.env.POSTGRES_HOST,
@@ -26,6 +27,16 @@ async function query(queryObject) {
   } finally {
     await client.end();
   }
+}
+
+function getSSLValues() {
+  if (process.env.POSTGRES_CA) {
+    return {
+      ca: process.env.POSTGRES_CA,
+    };
+  }
+
+  return process.env.NODE_ENV === "production" ? true : false;
 }
 
 export default {
